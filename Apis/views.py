@@ -105,9 +105,9 @@ def get_car_or_slot_info(request):
     else:
         return Response({'Missing parameters'})
 
-@api_view(['POST'])
-def show_table(request):
-    s = Slots.objects.all()
-    for i in s:
-        print(i.slots,' ',i.car)
-    return Response({'Success'})
+# @api_view(['POST'])
+# def show_table(request):
+#     s = Slots.objects.all()
+#     for i in s:
+#         print(i.slots,' ',i.car)
+#     return Response({'Success'})

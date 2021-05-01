@@ -38,7 +38,6 @@ class ApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # Unpark a car test cases
-
     def test_uac(self):
         self.client.post('/Apis/park-a-car?car_number=MH10DV3465', )
         response = self.client.post('/Apis/unpark-a-car?car_number=MH10DV3465', )
@@ -56,7 +55,6 @@ class ApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # Get car or slot info test cases
-
     def test_gcosi_car(self):
         self.client.post('/Apis/park-a-car?car_number=MH10DV3465', )
         response = self.client.post('/Apis/get-car-or-slot-info?car_number=MH10DV3465', )
