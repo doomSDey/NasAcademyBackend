@@ -10,7 +10,7 @@ from Apis.models import RateCount, Slots
 def index(request):
     return HttpResponse("Hello, world.")
 
-
+# limiting 10 request in 10 sec per unique ip
 def rate_limiter(request):
     ip: str
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -21,7 +21,6 @@ def rate_limiter(request):
     print("ip", ip)
     try:
         client = RateCount.objects.get(ip=ip)
-        print("ip qy=uery", client.ip, client.count)
         if ((time.time() - float(client.date_time)) % 60) > 10:
             RateCount.objects.filter(ip=ip).update(count=1, date_time=time.time())
         else:
@@ -31,13 +30,12 @@ def rate_limiter(request):
         return "ok"
     except Exception as e:
         print(e)
-        print("Ip not in db")
+        # print("Ip not in db")
         r = RateCount(ip=ip, count=1, date_time=time.time())
         r.save()
         client = RateCount.objects.get(ip=ip)
-        print(client.ip)
+        # print(client.ip)
         return "ok"
-
 
 # Apis
 
@@ -52,7 +50,7 @@ def park_a_car(request):
     car_number = request.GET['car_number']
 
     if (Slots.objects.filter(car = car_number)).exists():
-        return Response({'Car already parked.'})
+        return Response({'Car already parked'})
 
     s = Slots.objects.filter(car = 'null').first()
 
