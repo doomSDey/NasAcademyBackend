@@ -46,6 +46,9 @@ def park_a_car(request):
     if rate_limiter(request) == "exceed":
         return Response({'Number of request exceeded.Please try again after some time'})
 
+    if 'car_number' not in request.GET:
+        return Response({'Missing parameters'})
+
     car_number = request.GET['car_number']
 
     if (Slots.objects.filter(car = car_number)).exists():
@@ -67,6 +70,9 @@ def unpark_a_car(request):
     if rate_limiter(request) == "exceed":
         return Response({'Number of request exceeded.Please try again after some time'})
 
+    if 'car_number' not in request.GET:
+        return Response({'Missing parameters'})
+
     s = Slots.objects.filter(car = request.GET['car_number']).first()
 
     if s is None:
@@ -80,6 +86,9 @@ def unpark_a_car(request):
 def get_car_or_slot_info(request):
     if rate_limiter(request) == "exceed":
         return Response({'Number of request exceeded.Please try again after some time'})
+
+    if 'slots' or 'car_number' not in request.GET:
+        return Response({'Missing parameters'})
 
     if 'slots' in request.GET:
         s = Slots.objects.filter(slots = request.GET['slots']).first()
