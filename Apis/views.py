@@ -4,7 +4,7 @@ from rest_framework.response import Response
 import time
 
 # Create your views here.
-from Apis.models import RateCount
+from Apis.models import RateCount, Slots
 
 
 def index(request):
@@ -27,8 +27,8 @@ def rate_limiter(request):
         else:
             RateCount.objects.filter(ip=ip).update(count=client.count + 1)
         if client.count >= 10 and ((time.time() - float(client.date_time)) % 60) <= 10:
-            return Response({'Number of request exceeded.Please try again after some time'})
-        return Response({'ok'})
+            return "exceed"
+        return "ok"
     except Exception as e:
         print(e)
         print("Ip not in db")
@@ -36,11 +36,24 @@ def rate_limiter(request):
         r.save()
         client = RateCount.objects.get(ip=ip)
         print(client.ip)
-        return Response({'ok'})
+        return "ok"
 
 
 # Apis
 
 @api_view(['POST'])
 def park_a_car(request):
-    return rate_limiter(request)
+    if rate_limiter(request) == "exceed":
+        return Response({'Number of request exceeded.Please try again after some time'})
+    s = Slots.objects.all()
+    for i in s:
+        print(i.car)
+    s = Slots.objects.filter(car = 'null').first()
+
+    if s is None:
+        return Response({'No Parking slot available.Please try after some time'})
+    else:
+        s.car = request.GET['car_number']
+        s.save()
+    return Response({s.slots})
+
