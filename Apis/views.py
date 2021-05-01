@@ -76,7 +76,7 @@ def unpark_a_car(request):
     s = Slots.objects.filter(car = request.GET['car_number']).first()
 
     if s is None:
-        return Response({'No such car found.'})
+        return Response({'No such car found'})
     else:
         s.car = 'null'
         s.save()
@@ -87,24 +87,23 @@ def get_car_or_slot_info(request):
     if rate_limiter(request) == "exceed":
         return Response({'Number of request exceeded.Please try again after some time'})
 
-    if 'slots' or 'car_number' not in request.GET:
-        return Response({'Missing parameters'})
-
     if 'slots' in request.GET:
         s = Slots.objects.filter(slots = request.GET['slots']).first()
         if s is None:
-            return Response({'No such slot found.'})
+            return Response({'No such slot found'})
         else:
-            if s.car is 'null':
+            if s.car == 'null':
                 return Response({'Car number:'+'empty'+',Slot number:'+s.slots})
             else:
                 return Response({'Car number:'+s.car+',Slot number:'+s.slots})
-    else:
+    elif 'car_number' in request.GET:
         s = Slots.objects.filter(car = request.GET['car_number']).first()
         if s is None:
-            return Response({'No such car found.'})
+            return Response({'No such car found'})
         else:
             return Response({'Car number:'+s.car+',Slot number:'+s.slots})
+    else:
+        return Response({'Missing parameters'})
 
 @api_view(['POST'])
 def show_table(request):
