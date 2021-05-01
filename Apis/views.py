@@ -45,15 +45,61 @@ def rate_limiter(request):
 def park_a_car(request):
     if rate_limiter(request) == "exceed":
         return Response({'Number of request exceeded.Please try again after some time'})
-    s = Slots.objects.all()
-    for i in s:
-        print(i.car)
+
+    car_number = request.GET['car_number']
+
+    if (Slots.objects.filter(car = car_number)).exists():
+        return Response({'Car already parked.'})
+
     s = Slots.objects.filter(car = 'null').first()
 
     if s is None:
         return Response({'No Parking slot available.Please try after some time'})
     else:
-        s.car = request.GET['car_number']
+        s.car = car_number
         s.save()
+
+    print(s.slots)
     return Response({s.slots})
 
+@api_view(['POST'])
+def unpark_a_car(request):
+    if rate_limiter(request) == "exceed":
+        return Response({'Number of request exceeded.Please try again after some time'})
+
+    s = Slots.objects.filter(car = request.GET['car_number']).first()
+
+    if s is None:
+        return Response({'No such car found.'})
+    else:
+        s.car = 'null'
+        s.save()
+    return Response({'Success'})
+
+@api_view(['POST'])
+def get_car_or_slot_info(request):
+    if rate_limiter(request) == "exceed":
+        return Response({'Number of request exceeded.Please try again after some time'})
+
+    if 'slots' in request.GET:
+        s = Slots.objects.filter(slots = request.GET['slots']).first()
+        if s is None:
+            return Response({'No such slot found.'})
+        else:
+            if s.car is 'null':
+                return Response({'Car number:'+'empty'+',Slot number:'+s.slots})
+            else:
+                return Response({'Car number:'+s.car+',Slot number:'+s.slots})
+    else:
+        s = Slots.objects.filter(car = request.GET['car_number']).first()
+        if s is None:
+            return Response({'No such car found.'})
+        else:
+            return Response({'Car number:'+s.car+',Slot number:'+s.slots})
+
+@api_view(['POST'])
+def show_table(request):
+    s = Slots.objects.all()
+    for i in s:
+        print(i.slots,' ',i.car)
+    return Response({'Success'})

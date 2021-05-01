@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 
 class Slots(models.Model):
-    slots = models.CharField(max_length=200)
+    slots = models.CharField(max_length=200,primary_key=True)
     car = models.CharField(max_length=200)
 
 

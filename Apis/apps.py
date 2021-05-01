@@ -19,5 +19,5 @@ class ApisConfig(AppConfig):
         from Apis.models import Slots
         Slots.objects.all().delete()
         for i in range(0,int(lot_size)):
-            s = Slots(slots = i,car = 'null')
+            s = Slots(slots = i+1,car = 'null')
             s.save()
