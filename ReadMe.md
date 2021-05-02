@@ -40,7 +40,7 @@ During the initialization of the server a sqlite db is initalized that pulls the
  - **Get the Car/Slot Information:** Check if the slot or car is actually avaiable and if so then returns both the car and the slot value.  
  - **Rate Limiting Algo:** Extracts the ip and keeps a time and count which resets if there are less than 10 request per ip in 10 sec and sends a timeout message otherwise. This algo will break under concurrent requests.  
   
-**Note:** All the API check for missing params and also has a common rate limiting algo that's called.  
+**Note:** All the API check for missing/invalid params and also has a common rate limiting algo that's called.  
 I could have used a persistent datastructure instead of sqlite db but that I think would be a poor design and since sqlite is a integral part of Django and doesn't need any external imports hence I used it.  
   
 **Database structure overview:**  

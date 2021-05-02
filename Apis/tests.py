@@ -21,7 +21,7 @@ class ApiTest(TestCase):
     def test_pac_already_parked(self):
         self.client.post('/Apis/park-a-car?car_number=MH10DV3465', )
         response = self.client.post('/Apis/park-a-car?car_number=MH10DV3465', )
-        self.assertEqual(response.data, {'Car already parked.'})
+        self.assertEqual(response.data, {'Car already parked'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_pac_parking_slot_not_available(self):
@@ -35,6 +35,11 @@ class ApiTest(TestCase):
     def test_pac_missing_params(self):
         response = self.client.post('/Apis/park-a-car?', )
         self.assertEqual(response.data, {'Missing parameters'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_pac_empty_string(self):
+        response = self.client.post('/Apis/park-a-car?car_number', )
+        self.assertEqual(response.data, {'Invalid input'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # Unpark a car test cases
@@ -52,6 +57,11 @@ class ApiTest(TestCase):
     def test_uac_missing_params(self):
         response = self.client.post('/Apis/unpark-a-car?', )
         self.assertEqual(response.data, {'Missing parameters'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_uac_empty_string(self):
+        response = self.client.post('/Apis/unpark-a-car?car_number', )
+        self.assertEqual(response.data, {'Invalid input'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # Get car or slot info test cases
@@ -85,4 +95,9 @@ class ApiTest(TestCase):
     def test_gcosi_missing_params(self):
         response = self.client.post('/Apis/get-car-or-slot-info?', )
         self.assertEqual(response.data, {'Missing parameters'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_gcosi_empty_string(self):
+        response = self.client.post('/Apis/get-car-or-slot-info?slots', )
+        self.assertEqual(response.data, {'Invalid input'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -49,6 +49,9 @@ def park_a_car(request):
 
     car_number = request.GET['car_number']
 
+    if car_number == '' or car_number.isspace():
+        return Response({'Invalid input'})
+
     if (Slots.objects.filter(car = car_number)).exists():
         return Response({'Car already parked'})
 
@@ -71,7 +74,12 @@ def unpark_a_car(request):
     if 'car_number' not in request.GET:
         return Response({'Missing parameters'})
 
-    s = Slots.objects.filter(car = request.GET['car_number']).first()
+    car_number = request.GET['car_number']
+
+    if car_number == '' or car_number.isspace():
+        return Response({'Invalid input'})
+
+    s = Slots.objects.filter(car = car_number).first()
 
     if s is None:
         return Response({'No such car found'})
@@ -86,7 +94,11 @@ def get_car_or_slot_info(request):
         return Response({'Number of request exceeded.Please try again after some time'})
 
     if 'slots' in request.GET:
-        s = Slots.objects.filter(slots = request.GET['slots']).first()
+        slots = request.GET['slots']
+        if slots == '' or slots.isspace():
+            return Response({'Invalid input'})
+
+        s = Slots.objects.filter(slots = slots).first()
         if s is None:
             return Response({'No such slot found'})
         else:
@@ -95,7 +107,11 @@ def get_car_or_slot_info(request):
             else:
                 return Response({'Car number:'+s.car+',Slot number:'+s.slots})
     elif 'car_number' in request.GET:
-        s = Slots.objects.filter(car = request.GET['car_number']).first()
+        car_number = request.GET['car_number']
+        if car_number == '' or car_number.isspace():
+            return Response({'Invalid input'})
+
+        s = Slots.objects.filter(car = car_number).first()
         if s is None:
             return Response({'No such car found'})
         else:
